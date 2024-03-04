@@ -29,6 +29,7 @@ public class NewsModelServiceImpl implements NewsModelService{
         return newsRepository.getOne(id);
     }
 
+
     @Override
     public boolean update(NewsModel newsModel, int id) {
         if (newsRepository.existsById(id)) {
