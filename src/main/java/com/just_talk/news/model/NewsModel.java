@@ -1,17 +1,15 @@
 package com.just_talk.news.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "news")
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class NewsModel {
@@ -24,8 +22,12 @@ public class NewsModel {
     private String title;
     @Column(name="description")
     private String description;
-    @Column(name="author")
-    private int author;
+
+    @ManyToOne
+    @JoinColumn(name = "author")
+    private AuthorModel author;
+
     @Column(name="date")
-    private Timestamp date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
 }

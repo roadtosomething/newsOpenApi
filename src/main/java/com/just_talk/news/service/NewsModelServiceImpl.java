@@ -1,7 +1,10 @@
 package com.just_talk.news.service;
 
+import com.just_talk.news.dto.NewsDTO;
 import com.just_talk.news.model.NewsModel;
+import com.just_talk.news.repository.AuthorsRepository;
 import com.just_talk.news.repository.NewsRepository;
+import com.just_talk.news.utils.NewsModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -10,31 +13,33 @@ import java.util.*;
 @Service
 public class NewsModelServiceImpl implements NewsModelService{
     private final NewsRepository newsRepository;
+    private final NewsModelMapper mapper = new NewsModelMapper();
 
     public NewsModelServiceImpl (NewsRepository newsRepository){
         this.newsRepository = newsRepository;
     }
     @Override
-    public void create(NewsModel newsModel) {
-        newsRepository.save(newsModel);
+    public void create(NewsDTO newsDTO) {
+        newsDTO.setId(newsRepository.getNextValueSequence());
+        newsRepository.save(mapper.mapToEntity(newsDTO));
     }
 
     @Override
-    public List<NewsModel>  readAll() {
-        return newsRepository.findAll();
+    public List<NewsDTO> readAll() {
+        return mapper.mapToDto(newsRepository.findAll());
     }
 
     @Override
-    public NewsModel read(int id) {
-        return newsRepository.getOne(id);
+    public NewsDTO read(int id) {
+        return mapper.mapToDto(newsRepository.getOne(id));
     }
 
 
     @Override
-    public boolean update(NewsModel newsModel, int id) {
+    public boolean update(NewsDTO newsDTO, int id) {
         if (newsRepository.existsById(id)) {
-            newsModel.setId(id);
-            newsRepository.save(newsModel);
+            newsDTO.setId(id);
+            newsRepository.save(mapper.mapToEntity(newsDTO));
             return true;
         }
 

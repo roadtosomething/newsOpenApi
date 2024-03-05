@@ -12,8 +12,6 @@ services:
     environment:
       - SERVER_PORT= 8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/news
-    networks:
-      - app-network
 
   postgres-db:
     container_name: postgres_container
@@ -52,14 +50,13 @@ services:
       POSTGRES_DB: "news"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "root"
-      PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - ../2. Init Database:/docker-entrypoint-initdb.d
       - habrdb-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d news"]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d news" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -70,54 +67,48 @@ services:
         limits:
           cpus: '1'
           memory: 4G
-    networks:
-      - app-network
 
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4:8.3
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
-      PGADMIN_DEFAULT_PASSWORD: "root"
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    ports:
-      - "5050:80"
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1G
-    networks:
-      - app-network
-
-  postgres_exporter:
-    container_name: exporter_container
-    image: prometheuscommunity/postgres-exporter:v0.10.1
-    environment:
-      DATA_SOURCE_URI: "postgres:5432/news?sslmode=disable"
-      DATA_SOURCE_USER: "admin"
-      DATA_SOURCE_PASS: "root"
-      PG_EXPORTER_EXTEND_QUERY_PATH: "/etc/postgres_exporter/queries.yaml"
-    volumes:
-      - ./queries.yaml:/etc/postgres_exporter/queries.yaml:ro
-    ports:
-      - "9187:9187"
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 500M
-    networks:
-      - app-network
-
+#  pgadmin:
+#    container_name: pgadmin_container
+#    image: dpage/pgadmin4:8.3
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+#      PGADMIN_DEFAULT_PASSWORD: "root"
+#      PGADMIN_CONFIG_SERVER_MODE: "False"
+#    volumes:
+#      - pgadmin-data:/var/lib/pgadmin
+#    ports:
+#      - "5050:80"
+#    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 1G
+#    networks:
+#      - app-network
+#
+#  postgres_exporter:
+#    container_name: exporter_container
+#    image: prometheuscommunity/postgres-exporter:v0.10.1
+#    environment:
+#      DATA_SOURCE_URI: "postgres:5432/news?sslmode=disable"
+#      DATA_SOURCE_USER: "admin"
+#      DATA_SOURCE_PASS: "root"
+#      PG_EXPORTER_EXTEND_QUERY_PATH: "/etc/postgres_exporter/queries.yaml"
+#    volumes:
+#      - ./queries.yaml:/etc/postgres_exporter/queries.yaml:ro
+#    ports:
+#      - "9187:9187"
+#    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.2'
+#          memory: 500M
+#    networks:
+#      - app-network
+#
 volumes:
   habrdb-data:
   pgadmin-data:
-
-networks:
-  app-network:
-    driver: bridge

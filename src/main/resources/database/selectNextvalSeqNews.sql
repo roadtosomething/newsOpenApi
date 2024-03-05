@@ -1,0 +1,1 @@
+SELECT nextval('news_id_seq')
