@@ -3,7 +3,9 @@ package com.just_talk.news.controller;
 import com.just_talk.news.dto.NewsDTO;
 import com.just_talk.news.model.NewsModel;
 import com.just_talk.news.service.NewsModelService;
+import org.hibernate.query.QueryParameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +29,8 @@ public class NewsModelController {
         return new ResponseEntity<>(newsDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "{id}")
-    public ResponseEntity<NewsDTO> read(@PathVariable int id){
+    @GetMapping("/{id}")
+    public ResponseEntity<NewsDTO> read(@PathVariable("id") int id){
         final NewsDTO news = newsModelService.read(id);
 
         return news!= null
@@ -36,7 +38,7 @@ public class NewsModelController {
                 :new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<NewsDTO>> read(){
         final List<NewsDTO> news = newsModelService.readAll();
 
