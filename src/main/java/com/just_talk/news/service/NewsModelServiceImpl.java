@@ -8,6 +8,7 @@ import com.just_talk.news.utils.NewsModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,7 +27,11 @@ public class NewsModelServiceImpl implements NewsModelService{
 
     @Override
     public List<NewsDTO> readAll() {
-        return mapper.mapToDto(newsRepository.findAll());
+        return mapper.mapToDto(newsRepository.
+                findAll().
+                stream().
+                sorted(Comparator.comparingInt(NewsModel::getId)).
+                collect(Collectors.toList()));
     }
 
     @Override
